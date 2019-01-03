@@ -316,7 +316,14 @@ def _truncate_seq_pair(tokens_a, tokens_b, max_length):
             tokens_b.pop()
 
 
-def read_examples(input_file):
+def read_examples(input_file: str):
+    if input_file.endswith('txt'):
+        return read_examples_txt(input_file)
+    else:
+        return read_examples_csv(input_file)
+
+
+def read_examples_txt(input_file):
     """Read a list of `InputExample`s from an input file."""
     examples = []
     unique_id = 0
@@ -337,6 +344,33 @@ def read_examples(input_file):
             examples.append(
                 InputExample(unique_id=unique_id, text_a=text_a, text_b=text_b))
             unique_id += 1
+    return examples
+
+
+from data_helper import pd_reader
+
+
+def read_examples_csv(input_file: str):
+    df = pd_reader(input_file, 0 if input_file.endswith('csv') else None, [0, 1, 2], drop_dup_axis=2)
+    sentences = df[df.keys()[2]]
+    examples = []
+    unique_id = 0
+    for line in sentences:
+        line = tokenization.convert_to_unicode(line)
+        if not line:
+            break
+        line = line.strip()
+        text_a = None
+        text_b = None
+        m = re.match(r"^(.*) \|\|\| (.*)$", line)
+        if m is None:
+            text_a = line
+        else:
+            text_a = m.group(1)
+            text_b = m.group(2)
+        examples.append(
+            InputExample(unique_id=unique_id, text_a=text_a, text_b=text_b))
+        unique_id += 1
     return examples
 
 
