@@ -17,7 +17,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
+import os
 import codecs
 import collections
 import json
@@ -445,9 +445,23 @@ def main(_):
 
 
 if __name__ == "__main__":
+    os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '{}'.format(1)
     flags.mark_flag_as_required("input_file")
     flags.mark_flag_as_required("vocab_file")
     flags.mark_flag_as_required("bert_config_file")
     flags.mark_flag_as_required("init_checkpoint")
     flags.mark_flag_as_required("output_file")
     tf.app.run()
+
+"""
+nohup python extract_features.py \
+--input_file=../pre-training/global_data/train_test_data/dq_amq_20181106_train_train.csv \
+--vocab_file=chinese_L-12_H-768_A-12/vocab.txt \
+--bert_config_file=chinese_L-12_H-768_A-12/bert_config.json \
+--init_checkpoint=chinese_L-12_H-768_A-12 \
+--layers=-2 \
+--max_seq_length=40 \
+--output_file=amq_2_word_vec.json \
+--batch_size=8 > extract_amq.log &
+"""
