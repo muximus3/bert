@@ -63,6 +63,7 @@ def get_cls_embedding(bert_json_dir, raw_data_dir, layer_index, dest_dir):
 
 
 def main():
+    get_cls_embedding(FLAGS.bert_json_dir, FLAGS.raw_data_dir, FLAGS.layer_index, FLAGS.dest_dir)
 
 
 if __name__ == '__main__':
