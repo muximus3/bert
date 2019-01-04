@@ -58,7 +58,7 @@ def get_cls_embedding(bert_json_dir, raw_data_dir, layer_index, dest_dir):
 
             texts.append(text)
 
-    np.save(out_file, mat_data)
+    # np.save(out_file, mat_data)
     texts.sort()
     with open(Path(dest_dir).joinpath('{}_check_texts.txt'.format(base_name)), 'w', encoding='utf8') as f:
         f.writelines(texts)
