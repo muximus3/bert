@@ -41,16 +41,18 @@ def get_cls_embedding(bert_json_dir, raw_data_dir, layer_index, dest_dir):
         for line in f:
             setence_tokens = json.loads(line)
             line_index = setence_tokens['linex_index']
+            print('line_index:{}'.format(line_index))
             text = str(line_index)
             for token in setence_tokens['features']:
                 token_name = token['token']
                 if token_name == '[CLS]':
-                    for layer_token in token['layers']:
-                        if layer_token['index'] == layer_index:
-                            value = np.array(layer_token['values']).astype('float16')
-                            if mat_data is None:
-                                mat_data = np.zeros((raw_data_df.shape[0], len(value)), dtype='float16')
-                            mat_data[line_index] = value
+                    pass
+                    # for layer_token in token['layers']:
+                    #     if layer_token['index'] == layer_index:
+                    #         value = np.array(layer_token['values']).astype('float16')
+                    #         if mat_data is None:
+                    #             mat_data = np.zeros((raw_data_df.shape[0], len(value)), dtype='float16')
+                    #         mat_data[line_index] = value
                 else:
                     text += token_name
 
@@ -58,7 +60,7 @@ def get_cls_embedding(bert_json_dir, raw_data_dir, layer_index, dest_dir):
 
     np.save(out_file, mat_data)
     texts.sort()
-    with open(Path(dest_dir).joinpath('{}_check_texts.txt'), 'w', encoding='utf8') as f:
+    with open(Path(dest_dir).joinpath('{}_check_texts.txt'.format(base_name)), 'w', encoding='utf8') as f:
         f.writelines(texts)
 
 
