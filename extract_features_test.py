@@ -41,7 +41,6 @@ def get_cls_embedding(bert_json_dir, raw_data_dir, layer_index, dest_dir):
         for line in f:
             setence_tokens = json.loads(line)
             line_index = setence_tokens['linex_index']
-            print('line_index:{}'.format(line_index))
             text = str(line_index)
             for token in setence_tokens['features']:
                 token_name = token['token']
@@ -60,7 +59,7 @@ def get_cls_embedding(bert_json_dir, raw_data_dir, layer_index, dest_dir):
 
     # np.save(out_file, mat_data)
     texts.sort()
-    with open(Path(dest_dir).joinpath('{}_check_texts.txt'.format(base_name)), 'w', encoding='utf8') as f:
+    with open(('{}/{}_check_texts.txt'.format(dest_dir, base_name)), 'w', encoding='utf8') as f:
         f.writelines(texts)
 
 
