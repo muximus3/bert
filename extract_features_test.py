@@ -15,6 +15,8 @@ from extract_features import *
 import json
 import pandas as pd
 from pathlib import Path
+from collections import defaultdict, OrderedDict
+from data_helper import *
 
 logger = logging.getLogger(__name__)
 flags = tf.flags
@@ -33,34 +35,29 @@ def get_cls_embedding(bert_json_dir, raw_data_dir, layer_index, dest_dir):
     mat_data = None
     base_name = Path(raw_data_dir).name
     base_name = base_name[:base_name.rindex('.')]
-    texts = []
+    index_sentences = defaultdict(str)
     if not Path(dest_dir).is_dir():
         Path(dest_dir).mkdir(parents=True, exist_ok=True)
-    out_file = Path(dest_dir).joinpath('{}.npy'.format(base_name))
+    out_file = Path(dest_dir).joinpath('{}_{}.npy'.format(base_name, layer_index))
+    check_file = Path(dest_dir).joinpath('{}_{}.json'.format(base_name, layer_index))
     with open(bert_json_dir, 'r') as f:
         for line in f:
             setence_tokens = json.loads(line)
             line_index = setence_tokens['linex_index']
-            text = str(line_index)
             for token in setence_tokens['features']:
                 token_name = token['token']
+                index_sentences[line_index] = index_sentences[line_index] + token_name
                 if token_name == '[CLS]':
-                    pass
-                    # for layer_token in token['layers']:
-                    #     if layer_token['index'] == layer_index:
-                    #         value = np.array(layer_token['values']).astype('float16')
-                    #         if mat_data is None:
-                    #             mat_data = np.zeros((raw_data_df.shape[0], len(value)), dtype='float16')
-                    #         mat_data[line_index] = value
-                else:
-                    text += token_name
+                    for layer_token in token['layers']:
+                        if layer_token['index'] == layer_index:
+                            value = np.array(layer_token['values']).astype('float16')
+                            if mat_data is None:
+                                mat_data = np.zeros((raw_data_df.shape[0], len(value)), dtype='float16')
+                            mat_data[line_index] = value
 
-            texts.append(text)
-
-    # np.save(out_file, mat_data)
-    texts.sort()
-    with open(('{}/{}_check_texts.txt'.format(dest_dir, base_name)), 'w', encoding='utf8') as f:
-        f.writelines(texts)
+    np.save(out_file, mat_data)
+    index_sentences = OrderedDict(sorted(index_sentences.items()))
+    save_readable_jsons(check_file, index_sentences)
 
 
 def main(_):
@@ -72,4 +69,18 @@ if __name__ == '__main__':
     flags.mark_flag_as_required("raw_data_dir")
     flags.mark_flag_as_required("layer_index")
     flags.mark_flag_as_required("dest_dir")
-    tf.app.run()
+    # tf.app.run()
+    raw_data_dir = '../pre-training/global_data/train_test_data/dq_amq_20181106_train_test.csv'
+    raw_data_df = pd_reader(raw_data_dir, 0 if raw_data_dir.endswith('csv') else None, [0, 1, 2], drop_dup_axis=2)
+    data = load_json('data/dq_amq_20181106_train_test_-4.json')
+    for i, (k, v) in enumerate(data.items()):
+        if i % 10 == 0:
+            print(raw_data_df.values[i], v)
+
+"""
+nohup python extract_features_test.py \
+--bert_json_dir=amq_2_word_vec_test.json \
+--raw_data_dir=../pre-training/global_data/train_test_data/dq_amq_20181106_train_test.csv \
+--layer_index=-4 \
+--dest_dir=data > extract_mat_test.log &
+"""

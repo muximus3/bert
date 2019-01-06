@@ -14,7 +14,8 @@ import numpy as np
 import logging
 from typing import Union, Set
 import pandas as pd
-
+import json
+from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
@@ -53,3 +54,21 @@ def pd_reader(file_dir, header: Union[int, type(None)] = 0, usecols: Union[list,
         df = df.drop_duplicates(subset=[df.keys()[drop_dup_axis]])
         logger.info('=========> after drop dup:{}'.format(df.shape))
     return df
+
+
+def load_json(save_path: str) -> Union[dict, list]:
+    assert Path(save_path).is_file()
+    with open(save_path, "r", encoding='utf8') as openfile:
+        return json.load(openfile)
+
+
+def save_json(save_path: str, json_obj):
+    assert isinstance(json_obj, (dict, list))
+    with open(save_path, "w", encoding='utf8') as openfile:
+        json.dump(json_obj, openfile)
+
+
+def save_readable_jsons(save_path: str, json_obj):
+    assert isinstance(json_obj, (dict, list))
+    with open(save_path, "w", encoding='utf8') as openfile:
+        json.dump(json_obj, openfile, ensure_ascii=False)
