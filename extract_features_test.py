@@ -112,6 +112,6 @@ if __name__ == '__main__':
 nohup python extract_features_test.py \
 --bert_json_dir=amq_2_word_vec.json \
 --raw_data_dir=../pre-training/global_data/train_test_data/dq_amq_20181106_train_train.csv \
---layer_index=-1 \
+--layer_index=-2 \
 --dest_dir=data > extract_mat_train.log &
 """
