@@ -105,18 +105,13 @@ if __name__ == '__main__':
     flags.mark_flag_as_required("raw_data_dir")
     flags.mark_flag_as_required("layer_index")
     flags.mark_flag_as_required("dest_dir")
-    # tf.app.run()
-    raw_data_dir = '../pre-training/global_data/train_test_data/dq_amq_20181106_train_test.csv'
-    raw_data_df = pd_reader(raw_data_dir, 0 if raw_data_dir.endswith('csv') else None, [0, 1, 2], drop_dup_axis=2)
-    data = load_json('data/dq_amq_20181106_train_test_-4.json')
-    for i, (k, v) in enumerate(data.items()):
-        if i % 10 == 0:
-            print(raw_data_df.values[i], v)
+    tf.app.run()
+
 
 """
 nohup python extract_features_test.py \
---bert_json_dir=amq_2_word_vec_test.json \
---raw_data_dir=../pre-training/global_data/train_test_data/dq_amq_20181106_train_test.csv \
---layer_index=-4 \
---dest_dir=data > extract_mat_test.log &
+--bert_json_dir=amq_2_word_vec.json \
+--raw_data_dir=../pre-training/global_data/train_test_data/dq_amq_20181106_train_train.csv \
+--layer_index=-1 \
+--dest_dir=data > extract_mat_train.log &
 """
