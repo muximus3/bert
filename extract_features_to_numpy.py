@@ -97,8 +97,8 @@ def get_tokens_embedding(bert_json_dir,raw_data_dir, layer_index, dest_dir):
 
 
 def main(_):
-    get_tokens_embedding(FLAGS.bert_json_dir, FLAGS.raw_data_dir, FLAGS.layer_index, FLAGS.dest_dir)
-
+    # get_tokens_embedding(FLAGS.bert_json_dir, FLAGS.raw_data_dir, FLAGS.layer_index, FLAGS.dest_dir)
+    get_cls_embedding(FLAGS.bert_json_dir, FLAGS.raw_data_dir, FLAGS.layer_index, FLAGS.dest_dir)
 
 if __name__ == '__main__':
     flags.mark_flag_as_required("bert_json_dir")
@@ -109,9 +109,9 @@ if __name__ == '__main__':
 
 
 """
-nohup python extract_features_test.py \
+nohup python extract_features_to_numpy.py \
 --bert_json_dir=amq_2_word_vec.json \
---raw_data_dir=../pre-training/global_data/train_test_data/dq_amq_20181106_train_train.csv \
+--raw_data_dir=../pre-training/global_data/train_test_data/dq_amq_20181106_train_test.csv \
 --layer_index=-2 \
---dest_dir=data > extract_mat_train.log &
+--dest_dir=data > extract_mat_test_tokens.log &
 """
