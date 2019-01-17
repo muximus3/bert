@@ -38,8 +38,8 @@ def get_cls_embedding(bert_json_dir, raw_data_dir, layer_index, dest_dir):
     index_sentences = defaultdict(str)
     if not Path(dest_dir).is_dir():
         Path(dest_dir).mkdir(parents=True, exist_ok=True)
-    out_file = Path(dest_dir).joinpath('{}_{}.npy'.format(base_name, layer_index))
-    check_file = Path(dest_dir).joinpath('{}_{}.json'.format(base_name, layer_index))
+    out_file = Path(dest_dir).joinpath('{}_{}_cls.npy'.format(base_name, layer_index))
+    check_file = Path(dest_dir).joinpath('{}_{}_cls.json'.format(base_name, layer_index))
     with open(bert_json_dir, 'r') as f:
         for line in f:
             setence_tokens = json.loads(line)
@@ -68,8 +68,8 @@ def get_tokens_embedding(bert_json_dir,raw_data_dir, layer_index, dest_dir):
     index_sentences = defaultdict(str)
     if not Path(dest_dir).is_dir():
         Path(dest_dir).mkdir(parents=True, exist_ok=True)
-    out_file = Path(dest_dir).joinpath('{}_{}.npy'.format(base_name, layer_index))
-    check_file = Path(dest_dir).joinpath('{}_{}.json'.format(base_name, layer_index))
+    out_file = Path(dest_dir).joinpath('{}_{}_token.npy'.format(base_name, layer_index))
+    check_file = Path(dest_dir).joinpath('{}_{}_token.json'.format(base_name, layer_index))
     with open(bert_json_dir, 'r') as f:
         for line in f:
             setence_tokens = json.loads(line)
